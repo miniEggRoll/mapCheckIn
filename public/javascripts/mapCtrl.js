@@ -2,8 +2,14 @@
 
 angular.module('mapController', ['repository'])
     .controller('mapCtrl', function($scope, restaurant, mapApi){
-		$scope.map = mapApi.map;
-		$scope.markerAndInfo = mapApi.markerAndInfo;		
+		$scope.map = {};
+		$scope.markerAndInfo = [];
+		$scope.init = function(){
+			mapApi.InitMap(function(map, marker){
+				$scope.map = map;
+				$scope.markerAndInfo = marker;
+			});
+		};
     })
     .factory('setting', function(){
     	return {
@@ -12,6 +18,7 @@ angular.module('mapController', ['repository'])
     	};
     })
 	.factory('mapApi', function(restaurant, setting){
+		var map = {};
 		var restaurants = [];
 		var bound = {};
 		var markerAndInfo = [];
@@ -20,12 +27,43 @@ angular.module('mapController', ['repository'])
 		var LatLng = function(Lat, Lng){
 			return new google.maps.LatLng(Lat, Lng);
 		};
+		
+		var InitMap = function(callback){
+			map = new google.maps.Map(document.getElementById("map_canvas"), {
+				center: LatLng(25.040757, 121.502882),
+				zoom: 15,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
 
-		var map = new google.maps.Map(document.getElementById("map_canvas"), {
-			center: LatLng(25.040757, 121.502882),
-			zoom: 15,
-			mapTypeId: google.maps.MapTypeId.ROADMAP
-		});
+			google.maps.event.addListener(map, 'bounds_changed', function(){
+				if (bounds_changed) {
+					clearTimeout(bounds_changed);
+				};
+				bounds_changed = setTimeout(function(){
+					bound = map.getBounds();
+					for (var i = markerAndInfo.length - 1; i >= 0; i--) {
+						if (!bound.contains(markerAndInfo[i].marker.getPosition())) {
+							markerAndInfo[i].marker.setMap(null);
+							markerAndInfo.splice(i, 1);
+						}
+					}
+					restaurants = RestaurantInMap(bound, function(data){
+						for (var i = restaurants.length - 1; i >= 0; i--) {
+							AddMarker({
+								Lat: restaurants[i].Lat, 
+								Lng: restaurants[i].Lng, 
+								title: restaurants[i].name, 
+								infoContent: restaurants[i].name, 
+								iconPath: setting.iconPath
+							});
+						};
+					});
+				}, 300);
+			});
+
+			callback(map, markerAndInfo);
+		};
+
 
 		var AddMarker = function(input){
 			for (var i = markerAndInfo.length - 1; i >= 0; i--) {
@@ -74,38 +112,13 @@ angular.module('mapController', ['repository'])
 			}, callback);
 		};
 
-		google.maps.event.addListener(map, 'bounds_changed', function(){
-			if (bounds_changed) {
-				clearTimeout(bounds_changed);
-			};
-			bounds_changed = setTimeout(function(){
-				bound = map.getBounds();
-				for (var i = markerAndInfo.length - 1; i >= 0; i--) {
-					if (!bound.contains(markerAndInfo[i].marker.getPosition())) {
-						markerAndInfo[i].marker.setMap(null);
-						markerAndInfo.splice(i, 1);
-					}
-				}
-				restaurants = RestaurantInMap(bound, function(data){
-					for (var i = restaurants.length - 1; i >= 0; i--) {
-						AddMarker({
-							Lat: restaurants[i].Lat, 
-							Lng: restaurants[i].Lng, 
-							title: restaurants[i].name, 
-							infoContent: restaurants[i].name, 
-							iconPath: setting.iconPath
-						});
-					};
-				});
-			}, 300);
-		}); 
-
 		return {
 			AddMarker: AddMarker,
 			LatLng: LatLng,
 			map: map,
 			markerAndInfo: markerAndInfo,
-			MapBound: MapBound
+			MapBound: MapBound,
+			InitMap: InitMap
 		};
 	});
 
