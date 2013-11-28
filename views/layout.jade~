@@ -1,0 +1,12 @@
+octype 5
+html
+  head
+    script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js")
+    script(src="/javascripts/markerController.js")
+    script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1tA8WVKD6e1Mkx8cOAfnVGeBRukne6LI&sensor=true&language=zh-TW")
+    script(src="/javascripts/map.js")
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/map.css')
+  body(ng-app="mapApp")
+    block content

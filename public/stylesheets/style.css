@@ -1,0 +1,12 @@
+body {
+  padding-top: 60px;
+}
+@media (max-width: 974px) {
+  body {
+    padding-top: 0px;
+  }
+}
+
+div.container{
+	height: 100%;
+}

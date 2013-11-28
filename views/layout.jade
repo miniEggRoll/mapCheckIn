@@ -1,0 +1,25 @@
+doctype 5
+html
+  head
+    title= title
+    script(src="/javascripts/angular/angular.js")
+    script(src="/javascripts/angular/angular-resource.js")
+    script(src="/javascripts/angular/angular-route.js")
+
+    script(src="/javascripts/mapCtrl.js")
+    script(src="/javascripts/app.js")
+    script(src="/javascripts/repository.js")
+    script(src="/javascripts/editRestaurantCtrl.js")
+
+    script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1tA8WVKD6e1Mkx8cOAfnVGeBRukne6LI&sensor=true&language=zh-TW")
+
+    script(src="/javascripts/jquery/jquery-2.0.3.js")
+    script(src="/javascripts/bootstrap/bootstrap.js")
+
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/map.css')
+
+    link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap-theme.css')
+  body(ng-app="mapApp")
+    block content

@@ -1,0 +1,40 @@
+use strict'
+
+var app = angular.module('mapApp', ['markerController', 'mapController']);
+
+angular.module('mapController', [])
+    .controller('mapCtrl', function($scope, test){
+	var homeLatLng = new google.maps.LatLng(25.040757, 121.502882);
+	$scope.map = {};
+	$scope.MarkerAndInfo = [];
+	$scope.init = function(){
+	    var mapOptions = {
+		center: homeLatLng,
+		zoom: 15,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	    };
+	    $scope.map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+	    addMarker(homeLatLng, 'home', test);
+	};
+
+	var addMarker = function(LatLng, title, infoContent){
+	    var markerToAdd = new google.maps.Marker({
+		title: title,
+		position: LatLng,
+		map: $scope.map
+	    });
+	    var infoToAdd = new google.maps.InfoWindow({
+		content: infoContent||'helloworld',
+		maxWidth: 400
+	    });
+	    $scope.MarkerAndInfo.push({marker: markerToAdd, infoWindow: infoToAdd});
+	    google.maps.event.addListener(markerToAdd, "click", function(){
+		infoToAdd.open($scope.map, markerToAdd);
+	    });
+	};
+    });
+
+angular.module('markerController', [])
+    .controller('markerCtrl', function($scope){
+      
+    });

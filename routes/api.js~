@@ -1,0 +1,10 @@
+var restaurant = function(db){
+    var api = {
+    	'GET': function(req, res){
+	     
+	},
+	'POST': functino(req, res){
+
+	},
+    };
+};
